@@ -54,13 +54,34 @@ func main() {
 	}
 
 	l.Info(fmt.Sprintf("Itaú's invoice successfully consumed from %s!", invoicePath))
-	l.Info(fmt.Sprintf("Starting to generate %s...", internal.OrganizzeSheetName))
+	l.Info(fmt.Sprintf("Starting to generate %s...", internal.OrganizzeOFXName))
 
-	if err := internal.GenerateOrganizzeXLXSSheet(entries); err != nil {
+	if err := internal.GenerateOrganizzeOFX(entries); err != nil {
+		l.Error(err.Error())
+		return
+	}
+    
+    l.Info(fmt.Sprintf("Finished, %s was generated!", internal.OrganizzeOFXName))
+    l.Info(fmt.Sprintf("Starting to generate %s...", internal.OrganizzeSheetName))
+
+    if err := internal.GenerateOrganizzeXLXSSheet(entries); err != nil {
 		l.Error(err.Error())
 		return
 	}
 
 	l.Info(fmt.Sprintf("Finished, %s was generated!", internal.OrganizzeSheetName))
-	l.Info(fmt.Sprintf("Please run 'make run unoconv' to convert %s to organizze-entries-to-import.xls", internal.OrganizzeSheetName))
+	
+    // csv
+
+    l.Info(fmt.Sprintf("Starting to generate %s...", internal.OrganizzeCSVName))
+
+    if err := internal.GenerateOrganizzeCSV(entries); err != nil {
+        l.Error(err.Error())
+        return
+    }
+
+    l.Info(fmt.Sprintf("Finished, %s was generated!", internal.OrganizzeCSVName))
+
+    l.Info(fmt.Sprintf("Please run 'make run unoconv' to convert %s to organizze-entries-to-import.xls", internal.OrganizzeSheetName))
+
 }

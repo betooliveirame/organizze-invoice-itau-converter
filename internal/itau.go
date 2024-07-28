@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Rhymond/go-money"
 	"github.com/viniciusgabrielfo/organizze-invoice-itau-converter/pkg/category_definer"
 	"github.com/viniciusgabrielfo/organizze-invoice-itau-converter/pkg/model"
 	"github.com/viniciusgabrielfo/xls"
@@ -69,20 +68,20 @@ func GetEntriesFromItauInvoice(configs *ItauImportConfigs, filePath string) ([]m
 				continue
 			}
 
-			value, err := strconv.ParseFloat(row.Col(3), 32)
+			value, err := strconv.ParseFloat(row.Col(3), 64)
 			if err != nil {
 				return entries, err
 			}
 
-			if ok, installments := IsInstallmentPurchase(description); ok {
-				value = value * float64(installments)
-			}
+			// if ok, installments := IsInstallmentPurchase(description); ok {
+			// 	value = value * float64(installments)
+			// }
 
 			entries = append(entries, model.Entry{
 				Date:        date,
 				Description: description,
 				Category:    category_definer.GetCategoryFromDescription(description),
-				Value:       money.NewFromFloat(-value, money.BRL),
+				Value:       -value,
 			})
 		}
 	}
@@ -109,7 +108,7 @@ func IsBetweenConfigInternal(configs *ItauImportConfigs, date time.Time) bool {
 func IsInstallmentPurchase(description string) (bool, int32) {
 	logger := slog.Default()
 
-	re, err := regexp.Compile("[0-9]+/[0-9]+")
+	re, err := regexp.Compile("01/[0-9]+")
 	if err != nil {
 		logger.Error(err.Error())
 		return false, 0

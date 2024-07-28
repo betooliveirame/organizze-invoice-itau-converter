@@ -8,7 +8,7 @@ RUN add-apt-repository -y ppa:libreoffice/ppa && apt-get update
 
 RUN apt-get install -y python3-pip && apt-get install -y libreoffice 
 
-RUN pip install unoserver
+RUN pip install unoserver --break-system-packages
 
 COPY ./organizze-entries.xlsx organizze-entries.xlsx
 

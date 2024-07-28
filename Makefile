@@ -1,4 +1,4 @@
-invoice_path ?= $(HOME)/Downloads/Fatura-Excel.xls
+invoice_path ?= ./Fatura-Excel.xls
 
 build:
 	go build -v ./...
