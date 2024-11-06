@@ -297,10 +297,10 @@ func GenerateOrganizzeOFX(entries []model.Entry) error {
 			return err
 		}
 
-        _, err = file.WriteString("            <NAME>Uber</NAME>\n")
-        if err != nil {
-            return err
-        }
+        // _, err = file.WriteString("            <NAME>Uber</NAME>\n")
+        // if err != nil {
+        //     return err
+        // }
 
         _, err = file.WriteString("            <CATEGORY>Uber</CATEGORY>\n")
         if err != nil {
