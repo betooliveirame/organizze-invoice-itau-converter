@@ -69,3 +69,8 @@ tags
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/vim,visualstudiocode,go
+
+invoices/*
+organizze-entries.xlsx
+organizze-entries-to-import.xls
+organizze-entries-to-import.csv

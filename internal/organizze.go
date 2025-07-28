@@ -6,13 +6,13 @@ import (
     "time"
     "encoding/csv"
 
-	"github.com/viniciusgabrielfo/organizze-invoice-itau-converter/pkg/model"
+	"invoice-processor/pkg/model"
     "github.com/xuri/excelize/v2"
 )
 
 const OrganizzeSheetName = "organizze-entries.xlsx"
 
-func GenerateOrganizzeXLXSSheet(entries []model.Entry) error {
+func GenerateOrganizzeXLXSSheet(month string, entries []model.Entry) error {
 	f := excelize.NewFile()
 
 	defer func() error {
@@ -23,20 +23,21 @@ func GenerateOrganizzeXLXSSheet(entries []model.Entry) error {
 		return nil
 	}()
 
-	_ = f.SetCellValue("Sheet1", "A1", "Data")
-	_ = f.SetCellValue("Sheet1", "B1", "Descrição")
-	_ = f.SetCellValue("Sheet1", "C1", "Categoria")
-	_ = f.SetCellValue("Sheet1", "D1", "Valor")
-	_ = f.SetCellValue("Sheet1", "E1", "Situação")
+	_ = f.SetSheetName(f.GetSheetList()[0], month)
+	_ = f.SetCellValue(month, "A1", "Data")
+	_ = f.SetCellValue(month, "B1", "Descrição")
+	_ = f.SetCellValue(month, "C1", "Categoria")
+	_ = f.SetCellValue(month, "D1", "Valor")
+	_ = f.SetCellValue(month, "E1", "Tipo")
 
 	for i := 0; i < len(entries); i++ {
 		row := i + 2
 
-
-		_ = f.SetCellValue("Sheet1", fmt.Sprintf("A%d", row), entries[i].Date)
-		_ = f.SetCellValue("Sheet1", fmt.Sprintf("B%d", row), entries[i].Description)
-		_ = f.SetCellValue("Sheet1", fmt.Sprintf("C%d", row), entries[i].Category)
-		_ = f.SetCellFloat("Sheet1", fmt.Sprintf("D%d", row), entries[i].Value, 2, 32)
+		_ = f.SetCellValue(month, fmt.Sprintf("A%d", row), entries[i].Date)
+		_ = f.SetCellValue(month, fmt.Sprintf("B%d", row), entries[i].Description)
+		_ = f.SetCellValue(month, fmt.Sprintf("C%d", row), entries[i].Category)
+		_ = f.SetCellFloat(month, fmt.Sprintf("D%d", row), entries[i].Value, 2, 32)
+		_ = f.SetCellValue(month, fmt.Sprintf("E%d", row), entries[i].Type)
 	}
 
 	if err := f.SaveAs(OrganizzeSheetName); err != nil {
@@ -60,7 +61,7 @@ func GenerateOrganizzeCSV(entries []model.Entry) error {
     defer writer.Flush()
 
     // Escreve o cabeçalho no CSV
-    header := []string{"Date", "Description", "Category", "Value"}
+    header := []string{"Date", "Description", "Category", "Value", "Type"}
     if err := writer.Write(header); err != nil {
         return err
     }

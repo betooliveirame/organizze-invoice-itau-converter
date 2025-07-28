@@ -1,4 +1,6 @@
-invoice_path ?= ./invoices/Fatura-Excel.xls
+invoice_path1 ?= ./invoices/Fatura-Excel.xls
+invoice_path2 ?= ./invoices/fatura.pdf
+account_path ?= ./invoices/Extrato.xls
 
 build:
 	go build -v ./...
@@ -10,7 +12,7 @@ lint:
 	golangci-lint run -v --fix ./...
 
 run-invoice-itau-consumer:
-	go run cmd/main.go --file $(invoice_path)
+	go run cmd/main.go --file $(invoice_path1) --file $(invoice_path2) --account $(account_path) --month "Agosto"
 
 up-unoconv:
 	docker buildx build -t unoconv .
